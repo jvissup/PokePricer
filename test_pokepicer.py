@@ -4,9 +4,11 @@ Tests the core functionality without requiring external API calls
 """
 import unittest
 from unittest.mock import Mock, patch
+import os
 from ebay_pricer import EbayPricer
 from tcgplayer_pricer import TCGPlayerPricer
 from pokepicer import PokemonCardPricer
+from app import app as flask_app
 
 
 class TestEbayPricer(unittest.TestCase):
@@ -200,6 +202,102 @@ class TestPokemonCardPricer(unittest.TestCase):
         self.assertEqual(results['average_price'], 47.50)  # Average of 45 and 50
         self.assertEqual(results['price_range']['min'], 45.00)
         self.assertEqual(results['price_range']['max'], 50.00)
+
+
+class TestFlaskEndpoints(unittest.TestCase):
+    """Test Flask web application endpoints."""
+    
+    def setUp(self):
+        """Set up test fixtures."""
+        flask_app.config['TESTING'] = True
+        self.client = flask_app.test_client()
+    
+    def test_health_endpoint(self):
+        """Test health check endpoint."""
+        response = self.client.get('/health')
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data['status'], 'ok')
+    
+    @patch.dict('os.environ', {'EBAY_VERIFICATION_TOKEN': 'test-token-12345'})
+    def test_verification_token_endpoint_with_token(self):
+        """Test verification token endpoint with configured token."""
+        response = self.client.get('/ebay/verification-token')
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data['verificationToken'], 'test-token-12345')
+    
+    @patch.dict('os.environ', {}, clear=True)
+    def test_verification_token_endpoint_without_token(self):
+        """Test verification token endpoint without configured token."""
+        response = self.client.get('/ebay/verification-token')
+        self.assertEqual(response.status_code, 500)
+        data = response.get_json()
+        self.assertIn('error', data)
+    
+    def test_marketplace_account_deletion_success(self):
+        """Test marketplace account deletion endpoint with valid data."""
+        test_data = {
+            'metadata': {
+                'topic': 'MARKETPLACE_ACCOUNT_DELETION',
+                'schemaVersion': '1.0',
+                'deprecated': False
+            },
+            'notification': {
+                'notificationId': 'test-notification-id',
+                'eventDate': '2026-02-04T12:00:00.000Z',
+                'publishDate': '2026-02-04T12:00:01.000Z',
+                'publishAttemptCount': 1,
+                'data': {
+                    'username': 'test_user',
+                    'userId': '12345',
+                    'eiasToken': 'test-token'
+                }
+            }
+        }
+        
+        response = self.client.post(
+            '/ebay/marketplace-account-deletion',
+            json=test_data,
+            content_type='application/json'
+        )
+        
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data['status'], 'success')
+        self.assertIn('message', data)
+    
+    def test_marketplace_account_deletion_no_data(self):
+        """Test marketplace account deletion endpoint with no data."""
+        response = self.client.post(
+            '/ebay/marketplace-account-deletion',
+            content_type='application/json'
+        )
+        
+        self.assertEqual(response.status_code, 400)
+        data = response.get_json()
+        self.assertIn('error', data)
+    
+    def test_marketplace_account_deletion_minimal_data(self):
+        """Test marketplace account deletion endpoint with minimal data."""
+        test_data = {
+            'notification': {
+                'data': {
+                    'username': 'test_user',
+                    'userId': '12345'
+                }
+            }
+        }
+        
+        response = self.client.post(
+            '/ebay/marketplace-account-deletion',
+            json=test_data,
+            content_type='application/json'
+        )
+        
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertEqual(data['status'], 'success')
 
 
 def run_tests():
