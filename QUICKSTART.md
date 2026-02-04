@@ -16,9 +16,10 @@
 3. **Configure eBay API (Optional but recommended):**
    ```bash
    cp .env.example .env
-   # Edit .env and add your eBay App ID
+   # Edit .env and add your eBay App ID and verification token
    ```
    
+   For production eBay API access, you'll also need to set up the Marketplace Account Deletion endpoints.
    See [CONFIGURATION.md](CONFIGURATION.md) for detailed setup instructions.
 
 ## Usage

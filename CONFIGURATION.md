@@ -31,11 +31,49 @@
    ```
    EBAY_APP_ID=YourActualAppIDHere
    EBAY_CERT_ID=YourActualCertIDHere
+   EBAY_VERIFICATION_TOKEN=YourGeneratedVerificationToken
    ```
 
 3. Save the file
 
 **IMPORTANT**: Never commit the `.env` file to version control! It's already in `.gitignore`.
+
+### Step 5: Configure Marketplace Account Deletion (Required for Production)
+
+For production eBay API access, you must configure a Marketplace Account Deletion notification endpoint:
+
+1. **Generate a Verification Token**:
+   ```bash
+   # Using Python to generate a UUID
+   python -c "import uuid; print(uuid.uuid4())"
+   ```
+   Add this token to your `.env` file as `EBAY_VERIFICATION_TOKEN`
+
+2. **Deploy Your Application**:
+   - Deploy the Flask application to a publicly accessible server (e.g., Heroku, AWS, DigitalOcean)
+   - Ensure it's accessible via HTTPS (required by eBay)
+
+3. **Configure in eBay Developer Portal**:
+   - Log in to your eBay Developer account
+   - Navigate to your application
+   - Find "Marketplace Account Deletion/Closure Notifications" section
+   - Enter your endpoints:
+     - **Verification Token Endpoint**: `https://your-domain.com/ebay/verification-token`
+     - **Account Deletion Endpoint**: `https://your-domain.com/ebay/marketplace-account-deletion`
+   - Click "Verify" - eBay will call your verification endpoint to confirm it's working
+
+4. **Test the Endpoints**:
+   ```bash
+   # Test verification token endpoint
+   curl https://your-domain.com/ebay/verification-token
+   
+   # Test account deletion endpoint (local testing)
+   curl -X POST http://localhost:5000/ebay/marketplace-account-deletion \
+     -H "Content-Type: application/json" \
+     -d '{"notification": {"data": {"username": "test", "userId": "123"}}}'
+   ```
+
+**Note**: These endpoints are only required for production access. Sandbox/development keys work without them.
 
 ## API Key Security
 

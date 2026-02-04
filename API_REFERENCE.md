@@ -408,4 +408,82 @@ except Exception as e:
 
 ---
 
+## Web API Endpoints
+
+### GET /ebay/verification-token
+
+Returns the eBay verification token for Marketplace Account Deletion notifications.
+
+**Response:**
+```json
+{
+    "verificationToken": "your-verification-token"
+}
+```
+
+**Status Codes:**
+- 200: Success
+- 500: Verification token not configured
+
+**Example:**
+```bash
+curl http://localhost:5000/ebay/verification-token
+```
+
+### POST /ebay/marketplace-account-deletion
+
+Receives eBay Marketplace Account Deletion notifications.
+
+**Request Body:**
+```json
+{
+    "metadata": {
+        "topic": "MARKETPLACE_ACCOUNT_DELETION",
+        "schemaVersion": "1.0",
+        "deprecated": false
+    },
+    "notification": {
+        "notificationId": "unique-id",
+        "eventDate": "2026-02-04T12:00:00.000Z",
+        "publishDate": "2026-02-04T12:00:01.000Z",
+        "publishAttemptCount": 1,
+        "data": {
+            "username": "ebay_user",
+            "userId": "12345",
+            "eiasToken": "token"
+        }
+    }
+}
+```
+
+**Response:**
+```json
+{
+    "status": "success",
+    "message": "Account deletion notification received"
+}
+```
+
+**Status Codes:**
+- 200: Success
+- 400: Invalid request data
+- 500: Server error
+
+**Example:**
+```bash
+curl -X POST http://localhost:5000/ebay/marketplace-account-deletion \
+  -H "Content-Type: application/json" \
+  -d '{
+    "notification": {
+      "data": {
+        "username": "test_user",
+        "userId": "12345"
+      },
+      "eventDate": "2026-02-04T12:00:00.000Z"
+    }
+  }'
+```
+
+---
+
 For more examples, see [examples.py](examples.py) in the repository.

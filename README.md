@@ -77,7 +77,9 @@ pip install -r requirements.txt
      ```
      EBAY_APP_ID=your_actual_app_id
      EBAY_CERT_ID=your_actual_cert_id
+     EBAY_VERIFICATION_TOKEN=your_verification_token
      ```
+   - For production eBay API access, you'll need to configure the Marketplace Account Deletion notification endpoint (see [eBay API Configuration](#ebay-api-configuration) below)
 
 ## 📖 Usage
 
@@ -196,6 +198,50 @@ The tool consists of multiple components:
 - API keys are hashed using SHA256 for additional security
 - Never commit your `.env` file or expose your API keys publicly
 - The `.gitignore` file is configured to exclude sensitive files
+
+## eBay API Configuration
+
+### Marketplace Account Deletion Notification
+
+For production eBay API access, you must configure a Marketplace Account Deletion notification endpoint. This is required by eBay to comply with data privacy regulations.
+
+**Endpoints:**
+
+1. **Verification Token Endpoint**: `GET /ebay/verification-token`
+   - Returns your verification token for eBay to verify the endpoint
+   - Configure `EBAY_VERIFICATION_TOKEN` in your `.env` file
+
+2. **Marketplace Account Deletion Endpoint**: `POST /ebay/marketplace-account-deletion`
+   - Receives notifications when eBay users delete their marketplace accounts
+   - Automatically logs deletion requests
+
+**Setup Steps:**
+
+1. Generate a unique verification token (e.g., UUID):
+   ```bash
+   # Example: using Python to generate a UUID
+   python -c "import uuid; print(uuid.uuid4())"
+   ```
+
+2. Add the token to your `.env` file:
+   ```
+   EBAY_VERIFICATION_TOKEN=your-generated-token-here
+   ```
+
+3. Start your Flask application:
+   ```bash
+   python app.py
+   ```
+
+4. In the eBay Developer Portal:
+   - Navigate to your application settings
+   - Find the "Marketplace Account Deletion" section
+   - Enter your endpoints:
+     - Verification Token Endpoint: `https://your-domain.com/ebay/verification-token`
+     - Account Deletion Endpoint: `https://your-domain.com/ebay/marketplace-account-deletion`
+   - eBay will verify your endpoints before granting production access
+
+**Note**: These endpoints are only required for production eBay API access. For development/sandbox access, they are optional.
 
 ## API Rate Limits
 
