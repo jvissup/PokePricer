@@ -23,7 +23,28 @@
 
 ## Usage
 
-### Interactive Mode (Recommended for beginners)
+### Web Interface (Recommended ⭐)
+
+**Start the web server:**
+```bash
+python app.py
+```
+
+**Open your browser to:**
+```
+http://localhost:5000
+```
+
+That's it! You now have a beautiful web interface to search for Pokemon cards! 🎉
+
+Features:
+- ✨ Clean, modern design
+- 📱 Mobile-friendly
+- 🔍 Real-time search
+- 📊 Visual price breakdowns
+- 🎨 Pokemon-themed colors
+
+### Interactive CLI Mode
 
 ```bash
 python pokepicer.py

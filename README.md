@@ -1,17 +1,59 @@
 # PokePricer
 
-Pokemon Card Price Comparison Tool that aggregates pricing from multiple sources including eBay, TCGPlayer, and more!
+Pokemon Card Price Comparison Tool - **Now with Web Interface!** 🌐
 
-## Features
+Get real-time pricing from multiple sources including eBay and TCGPlayer through an easy-to-use web interface or command-line tool.
 
-- **eBay Integration**: Fetches the top 5 last completed and sold items to calculate average price
-- **TCGPlayer Web Scraping**: Uses manual crawl algorithm to extract pricing data
-- **Secure API Key Handling**: eBay API keys are hashed and never exposed in public
-- **Multi-language Support**: Search for cards in different languages (English, Japanese, French, etc.)
-- **Condition-based Pricing**: Get accurate prices based on card condition (Mint, Near Mint, Played, etc.)
-- **Price Aggregation**: Combines data from multiple sources for comprehensive pricing
+## ✨ Features
 
-## Installation
+- **🌐 Web Interface**: Beautiful, responsive web UI for easy searching
+- **💻 CLI Version**: Command-line interface for power users
+- **🛒 eBay Integration**: Fetches the top 5 last completed and sold items to calculate average price
+- **🎯 TCGPlayer Web Scraping**: Uses manual crawl algorithm to extract pricing data
+- **🔒 Secure API Key Handling**: eBay API keys are hashed and never exposed in public
+- **🌍 Multi-language Support**: Search for cards in different languages (English, Japanese, French, etc.)
+- **📊 Condition-based Pricing**: Get accurate prices based on card condition (Mint, Near Mint, Played, etc.)
+- **📈 Price Aggregation**: Combines data from multiple sources for comprehensive pricing
+
+## 🚀 Quick Start
+
+### Web Version (Recommended)
+
+1. **Clone and install:**
+```bash
+git clone https://github.com/jvissup/PokePricer.git
+cd PokePricer
+pip install -r requirements.txt
+```
+
+2. **Run the web server:**
+```bash
+python app.py
+```
+
+3. **Open your browser:**
+```
+http://localhost:5000
+```
+
+That's it! Start searching for Pokemon cards in your browser! 🎉
+
+### Command-Line Version
+
+```bash
+python pokepicer.py
+```
+
+## 📸 Screenshots
+
+The web interface features:
+- Clean, modern design with Pokemon-themed colors
+- Responsive layout that works on desktop and mobile
+- Real-time search results with price breakdowns
+- Source-by-source pricing comparison
+- Average price calculation with price ranges
+
+## 🔧 Installation
 
 1. Clone the repository:
 ```bash
@@ -24,9 +66,9 @@ cd PokePricer
 pip install -r requirements.txt
 ```
 
-3. Set up your eBay API credentials:
+3. (Optional) Set up your eBay API credentials:
    - Go to [eBay Developers Program](https://developer.ebay.com/)
-   - Create an application to get your App ID and Cert ID
+   - Create an application to get your App ID
    - Copy `.env.example` to `.env`:
      ```bash
      cp .env.example .env
@@ -37,9 +79,27 @@ pip install -r requirements.txt
      EBAY_CERT_ID=your_actual_cert_id
      ```
 
-## Usage
+## 📖 Usage
 
-Run the pricing tool:
+### Web Interface
+
+1. Start the server:
+   ```bash
+   python app.py
+   ```
+
+2. Open http://localhost:5000 in your browser
+
+3. Enter your search:
+   - **Pokemon Card Name**: e.g., "Charizard VMAX", "Pikachu V"
+   - **Language**: Select from dropdown (default: English)
+   - **Condition**: Select card condition (default: Near Mint)
+
+4. Click "Search Prices" and view results!
+
+### Command Line Interface
+
+Run the CLI version:
 ```bash
 python pokepicer.py
 ```
@@ -49,24 +109,9 @@ The tool will prompt you for:
 2. **Language**: The language of the card (default: English)
 3. **Condition**: The condition of the card (default: Near Mint)
 
-### Example Session
+### Example Results
 
 ```
-Enter Pokemon card name: Charizard VMAX
-Enter card language (default: English): English
-Enter card condition (default: Near Mint): Near Mint
-
-============================================================
-Searching for: Charizard VMAX
-Language: English | Condition: Near Mint
-============================================================
-
-Fetching prices from eBay...
-✓ eBay: $45.67 (based on 5 sold items)
-
-Fetching prices from TCGPlayer...
-✓ TCGPlayer: $48.99
-
 ============================================================
 PRICING SUMMARY
 ============================================================
@@ -109,7 +154,22 @@ PRICE RANGE:         $45.67 - $48.99
 
 ## Architecture
 
-The tool consists of three main modules:
+The tool consists of multiple components:
+
+### Web Application (`app.py`)
+- Flask-based web server
+- RESTful API endpoint for searching
+- Serves static HTML/CSS/JS files
+- **Run with:** `python app.py`
+- **Access at:** http://localhost:5000
+
+### Frontend (HTML/CSS/JS)
+- Modern, responsive web interface
+- Real-time search with loading states
+- Beautiful Pokemon-themed design
+- Mobile-friendly layout
+
+### Backend Modules
 
 ### 1. `ebay_pricer.py`
 - Connects to eBay Finding API

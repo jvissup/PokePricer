@@ -15,30 +15,30 @@ class EbayPricer:
     
     def __init__(self, app_id: str):
         """
-        Initialize eBay pricer with encrypted API credentials.
+        Initialize eBay pricer with API credentials.
         
         Args:
-            app_id: eBay App ID (will be hashed for security)
+            app_id: eBay App ID
         """
-        self.app_id = self._hash_api_key(app_id)
+        # Store the raw API key for API calls (required by eBay)
+        self.api_key = app_id
+        # Also store a hashed version for logging/display purposes
+        self.api_key_hash = self._hash_api_key(app_id)
         self.base_url = "https://svcs.ebay.com/services/search/FindingService/v1"
         
     @staticmethod
     def _hash_api_key(api_key: str) -> str:
         """
-        Hash the API key for security - never expose the raw key.
+        Create a hash of the API key for secure logging/display.
+        The hash is used for identification in logs without exposing the actual key.
         
         Args:
             api_key: Raw API key
             
         Returns:
-            Hashed API key
+            SHA256 hash of the API key (for logging only)
         """
-        # Create a SHA256 hash of the API key
-        hashed = hashlib.sha256(api_key.encode()).hexdigest()
-        # For eBay API, we still need to use the original key for actual calls
-        # But we store it hashed in logs/displays
-        return api_key  # In production, implement proper encryption
+        return hashlib.sha256(api_key.encode()).hexdigest()
     
     def search_sold_items(self, card_name: str, language: str = "English", 
                          condition: str = "Used") -> List[Dict]:
@@ -59,7 +59,7 @@ class EbayPricer:
         params = {
             'OPERATION-NAME': 'findCompletedItems',
             'SERVICE-VERSION': '1.0.0',
-            'SECURITY-APPNAME': self.app_id,
+            'SECURITY-APPNAME': self.api_key,
             'RESPONSE-DATA-FORMAT': 'JSON',
             'REST-PAYLOAD': '',
             'keywords': search_query,
