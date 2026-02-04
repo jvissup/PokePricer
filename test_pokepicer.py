@@ -3,7 +3,7 @@ Unit tests for Pokemon Card Pricing Tool
 Tests the core functionality without requiring external API calls
 """
 import unittest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from ebay_pricer import EbayPricer
 from tcgplayer_pricer import TCGPlayerPricer
 from pokepicer import PokemonCardPricer

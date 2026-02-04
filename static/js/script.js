@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.average_price) {
             averageBox.innerHTML = `
                 <div class="label">Overall Average Price</div>
-                <div class="price">$${data.average_price.toFixed(2)} ${data.currency}</div>
+                <div class="price">$${data.average_price.toFixed(2)} ${data.currency || 'USD'}</div>
                 ${data.price_range ? `
                     <div class="range">
                         Range: $${data.price_range.min.toFixed(2)} - $${data.price_range.max.toFixed(2)}
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             sourceCard.innerHTML = `
                 <div class="source-name">${escapeHtml(source.source)}</div>
-                <div class="source-price">$${source.average_price.toFixed(2)} ${source.currency}</div>
+                <div class="source-price">$${source.average_price.toFixed(2)} ${source.currency || 'USD'}</div>
                 ${detailsHtml}
             `;
             

@@ -5,8 +5,6 @@ Fetches the top 5 last completed and sold items to calculate average price.
 import os
 import requests
 from typing import List, Dict, Optional
-from cryptography.fernet import Fernet
-import base64
 import hashlib
 
 

@@ -75,5 +75,8 @@ if __name__ == '__main__':
     ╚════════════════════════════════════════════════════════╝
     """)
     
+    # Get debug mode from environment (default: False for production)
+    debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+    
     # Run the Flask app
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=debug_mode, host='0.0.0.0', port=5000)
